@@ -13,7 +13,7 @@ const Header = ({ isCart, setIsCart }) => {
         <button className="hidden md:block text-2xl">About</button>
         <button className="hidden md:block text-2xl">Info</button>
       </div>
-      <div className="flex justify-center items-center">
+      <div className="hidden md:flex justify-center items-center">
         <button
           className="h-full"
           onClick={() => {
