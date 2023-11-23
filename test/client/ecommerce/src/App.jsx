@@ -8,11 +8,15 @@ import {
 import { getAllCategories } from './services/categories.services';
 import './App.css';
 import OneProduct from './components/OneProduct';
+import { useRecoilValue } from 'recoil';
+import { cartState } from './state/atoms/cartState';
+import Cart from './components/Cart';
 
 function App() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [category, setCategory] = useState('');
+  const [isCart, setIsCart] = useState(false);
   const [oneProductInfo, setOneProductInfo] = useState({
     id: '',
     isOneProduct: false,
@@ -56,8 +60,9 @@ function App() {
   }, [category]);
 
   return (
-    <div className="flex flex-col bg-green-50">
-      <Header />
+    <div className="flex flex-col pt-[10vh] bg-green-50">
+      <Header isCart={isCart} setIsCart={setIsCart} />
+      {isCart && <Cart setOneProductInfo={setOneProductInfo} />}
       {oneProductInfo.isOneProduct ? (
         <OneProduct
           id={oneProductInfo.id}

@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { getOneProduct } from '../services/products.services';
+import { cartState } from '../state/atoms/cartState';
+import { useRecoilState } from 'recoil';
 
 const OneProduct = ({ id, setOneProductInfo }) => {
   const [product, setProduct] = useState({});
+  const [text, setText] = useState('Add to cart');
+  const [cart, setCart] = useRecoilState(cartState);
   const [isProduct, setIsProduct] = useState(false);
 
   const handleOneProduct = async () => {
@@ -18,13 +22,35 @@ const OneProduct = ({ id, setOneProductInfo }) => {
     setOneProductInfo({ id: '', isOneProduct: false });
   };
 
+  const handleCart = () => {
+    const isProductInCart = cart.some((item) => item.id === product.id);
+
+    if (!isProductInCart) {
+      setCart((cart) => [...cart, product]);
+      setText('Remove from cart');
+    } else {
+      setCart((cart) => cart.filter((item) => item.id !== product.id));
+      setText('Add to cart');
+    }
+  };
+
   useEffect(() => {
     handleOneProduct();
   }, []);
 
   useEffect(() => {
-    console.log(product.name);
+    const isProductInCart = cart.some((item) => item.id === product.id);
+
+    if (isProductInCart) {
+      setText('Remove from cart');
+    } else {
+      setText('Add to cart');
+    }
   }, [product]);
+
+  useEffect(() => {
+    console.log(cart);
+  }, [cart]);
 
   return (
     <>
@@ -47,9 +73,17 @@ const OneProduct = ({ id, setOneProductInfo }) => {
               <p className="text-xl">
                 <b>Brand:</b> {product.category.name}
               </p>
-              <div className="flex justify-center items-center w-full">
+              <div className="flex flex-col md:flex-row justify-center items-center w-full gap-4">
                 <button
-                  className="text-2xl bg-green-50 w-1/2 rounded-lg"
+                  className="text-2xl bg-green-50 px-8 rounded-lg"
+                  onClick={() => {
+                    handleCart();
+                  }}
+                >
+                  {text}
+                </button>
+                <button
+                  className="text-2xl bg-green-50 px-8 rounded-lg"
                   onClick={() => {
                     {
                       handleNoProduct();
